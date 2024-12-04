@@ -2,7 +2,6 @@ package day
 
 import (
 	_ "embed"
-	"fmt"
 	"strings"
 )
 
@@ -28,33 +27,26 @@ func part1(input string) int {
 			columns[index] = append(columns[index], character)
 
 			// Backward
-			if lineNumber >= 3 && index >= 3 && character == "X" &&
+			if lineNumber >= 3 && index >= 3 && (character == "X" &&
 				columns[index-1][lineNumber-1] == "M" &&
 				columns[index-2][lineNumber-2] == "A" &&
-				columns[index-3][lineNumber-3] == "S" {
-				xmasMatches += 1
-			}
-			if lineNumber >= 3 && index >= 3 && character == "S" &&
-				columns[index-1][lineNumber-1] == "A" &&
-				columns[index-2][lineNumber-2] == "M" &&
-				columns[index-3][lineNumber-3] == "X" {
+				columns[index-3][lineNumber-3] == "S" ||
+				character == "S" &&
+					columns[index-1][lineNumber-1] == "A" &&
+					columns[index-2][lineNumber-2] == "M" &&
+					columns[index-3][lineNumber-3] == "X") {
 				xmasMatches += 1
 			}
 
 			// Forward
-			if lineNumber >= 3 && index <= len(line)-4 && character == "X" &&
+			if lineNumber >= 3 && index <= len(line)-4 && (character == "X" &&
 				columns[index+1][lineNumber-1] == "M" &&
 				columns[index+2][lineNumber-2] == "A" &&
-				columns[index+3][lineNumber-3] == "S" {
-				xmasMatches += 1
-				fmt.Println(fmt.Sprintf("XMAS schuin hit, line %d", lineNumber))
-			}
-			if lineNumber >= 3 && index <= len(line)-4 && character == "S" &&
+				columns[index+3][lineNumber-3] == "S" || character == "S" &&
 				columns[index+1][lineNumber-1] == "A" &&
 				columns[index+2][lineNumber-2] == "M" &&
-				columns[index+3][lineNumber-3] == "X" {
+				columns[index+3][lineNumber-3] == "X") {
 				xmasMatches += 1
-				fmt.Println(fmt.Sprintf("SAMX schuin hit, line %d", lineNumber))
 			}
 		}
 	}
@@ -75,7 +67,6 @@ func part2(input string) int {
 		for index, character := range strings.Split(line, "") {
 			columns[index] = append(columns[index], character)
 
-			// Backward
 			if (lineNumber >= 2 && index >= 2 && character == "M" &&
 				columns[index-1][lineNumber-1] == "A" &&
 				columns[index-2][lineNumber-2] == "S") ||
