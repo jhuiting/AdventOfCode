@@ -36,15 +36,11 @@ func part1(input string) int {
 	rules = [][]int{}
 
 	for _, line := range strings.Split(input, "\n") {
-		if line == "" {
-			continue
-		}
-
 		if strings.Contains(line, "|") {
 			var n, m int
 			_, _ = fmt.Sscanf(line, "%d|%d", &n, &m)
 			rules = append(rules, []int{n, m})
-		} else {
+		} else if line != "" {
 			items, _ := StringsToInts(strings.Split(line, ","))
 			if slices.IsSortedFunc(items, cmp) {
 				validNumbers += items[len(items)/2]
@@ -60,15 +56,11 @@ func part2(input string) int {
 	rules = [][]int{}
 
 	for _, line := range strings.Split(input, "\n") {
-		if line == "" {
-			continue
-		}
-
 		if strings.Contains(line, "|") {
 			var n, m int
 			_, _ = fmt.Sscanf(line, "%d|%d", &n, &m)
 			rules = append(rules, []int{n, m})
-		} else {
+		} else if line != "" {
 			items, _ := StringsToInts(strings.Split(line, ","))
 			if !slices.IsSortedFunc(items, cmp) {
 				slices.SortFunc(items, cmp)
