@@ -1,11 +1,12 @@
-package day
+package day5
 
 import (
 	_ "embed"
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
+
+	helpers "eye.security/v2/helpers"
 )
 
 //go:embed input.txt
@@ -19,7 +20,7 @@ func init() {
 }
 
 var rules [][]int
-var cmp = func(left, right int) int {
+var cmp = func(left int, right int) int {
 	for _, rule := range rules {
 		if rule[0] == right && rule[1] == left {
 			return 1
@@ -41,7 +42,7 @@ func part1(input string) int {
 			_, _ = fmt.Sscanf(line, "%d|%d", &n, &m)
 			rules = append(rules, []int{n, m})
 		} else if line != "" {
-			items, _ := StringsToInts(strings.Split(line, ","))
+			items, _ := helpers.StringsToInts(strings.Split(line, ","))
 			if slices.IsSortedFunc(items, cmp) {
 				validNumbers += items[len(items)/2]
 			}
@@ -61,7 +62,7 @@ func part2(input string) int {
 			_, _ = fmt.Sscanf(line, "%d|%d", &n, &m)
 			rules = append(rules, []int{n, m})
 		} else if line != "" {
-			items, _ := StringsToInts(strings.Split(line, ","))
+			items, _ := helpers.StringsToInts(strings.Split(line, ","))
 			if !slices.IsSortedFunc(items, cmp) {
 				slices.SortFunc(items, cmp)
 				validNumbers += items[len(items)/2]
@@ -70,17 +71,4 @@ func part2(input string) int {
 	}
 
 	return validNumbers
-}
-
-func StringsToInts(strings []string) ([]int, error) {
-	ints := make([]int, len(strings))
-	for i, s := range strings {
-		num, err := strconv.Atoi(s)
-		if err != nil {
-			return nil, err
-		}
-		ints[i] = num
-	}
-
-	return ints, nil
 }

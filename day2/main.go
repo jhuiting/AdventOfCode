@@ -4,6 +4,8 @@ import (
 	_ "embed"
 	"slices"
 	"strings"
+
+	helpers "eye.security/v2/helpers"
 )
 
 //go:embed input.txt
@@ -20,7 +22,7 @@ func part1(input string) int {
 	safeReports := 0
 
 	for _, line := range strings.Split(input, "\n") {
-		report, _ := StringsToInts(strings.Split(line, " "))
+		report, _ := helpers.StringsToInts(strings.Split(line, " "))
 
 		if isSafeReport(report, false) {
 			safeReports++
@@ -33,7 +35,7 @@ func part1(input string) int {
 func part2(input string) int {
 	safeReports := 0
 	for _, line := range strings.Split(input, "\n") {
-		report, _ := StringsToInts(strings.Split(line, " "))
+		report, _ := helpers.StringsToInts(strings.Split(line, " "))
 
 		if isSafeReport(report, true) {
 			safeReports++

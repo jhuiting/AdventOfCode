@@ -1,4 +1,4 @@
-package day
+package day3
 
 import (
 	_ "embed"
