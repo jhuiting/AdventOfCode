@@ -40,7 +40,7 @@ func part2(input string) int {
 
 	totalSimilarity := 0
 	for _, left := range leftPairs {
-		totalSimilarity += Reduce(rightPairs, 0, func(acc int, i int, elem int) int {
+		totalSimilarity += Reduce[int](rightPairs, 0, func(acc int, i int, elem int) int {
 			if left == elem {
 				return acc + (1 * left)
 			}
