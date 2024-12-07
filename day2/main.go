@@ -22,9 +22,7 @@ func part1(input string) int {
 	safeReports := 0
 
 	for _, line := range strings.Split(input, "\n") {
-		report, _ := helpers.StringsToInts(strings.Split(line, " "))
-
-		if isSafeReport(report, false) {
+		if isSafeReport(helpers.ToInts(strings.Split(line, " ")), false) {
 			safeReports++
 		}
 	}
@@ -35,9 +33,7 @@ func part1(input string) int {
 func part2(input string) int {
 	safeReports := 0
 	for _, line := range strings.Split(input, "\n") {
-		report, _ := helpers.StringsToInts(strings.Split(line, " "))
-
-		if isSafeReport(report, true) {
+		if isSafeReport(helpers.ToInts(strings.Split(line, " ")), true) {
 			safeReports++
 		}
 	}

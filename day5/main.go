@@ -42,8 +42,7 @@ func part1(input string) int {
 			_, _ = fmt.Sscanf(line, "%d|%d", &n, &m)
 			rules = append(rules, []int{n, m})
 		} else if line != "" {
-			items, _ := helpers.StringsToInts(strings.Split(line, ","))
-			if slices.IsSortedFunc(items, cmp) {
+			if items := helpers.ToInts(strings.Split(line, ",")); slices.IsSortedFunc(items, cmp) {
 				validNumbers += items[len(items)/2]
 			}
 		}
@@ -62,8 +61,7 @@ func part2(input string) int {
 			_, _ = fmt.Sscanf(line, "%d|%d", &n, &m)
 			rules = append(rules, []int{n, m})
 		} else if line != "" {
-			items, _ := helpers.StringsToInts(strings.Split(line, ","))
-			if !slices.IsSortedFunc(items, cmp) {
+			if items := helpers.ToInts(strings.Split(line, ",")); !slices.IsSortedFunc(items, cmp) {
 				slices.SortFunc(items, cmp)
 				validNumbers += items[len(items)/2]
 			}
