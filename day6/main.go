@@ -2,7 +2,6 @@ package day6
 
 import (
 	_ "embed"
-	"maps"
 	"slices"
 	"strings"
 )
@@ -69,7 +68,7 @@ const (
 func part1(input string) int {
 	grid, position := createGrid(input)
 
-	positions, _ := walkGrid(position, Up, grid)
+	positions, _ := walkGrid(position, Up, grid, false)
 	return len(positions)
 }
 
@@ -77,14 +76,14 @@ func part2(input string) int {
 	grid, position := createGrid(input)
 
 	loops := 0
-	visitedPositions, _ := walkGrid(position, Up, grid)
+	visitedPositions, _ := walkGrid(position, Up, grid, false)
 
 	for y, row := range grid {
 		for x, cell := range row {
-			if cell == pathChar && slices.Index(visitedPositions, Position{x, y}) != -1 {
+			if _, ok := visitedPositions[Position{x, y}]; cell == pathChar && ok {
 				// Just try when it's on the guard's path
 				grid[y][x] = obstacleChar
-				if _, isLoop := walkGrid(position, Up, grid); isLoop {
+				if _, isLoop := walkGrid(position, Up, grid, true); isLoop {
 					loops += 1
 				}
 				grid[y][x] = pathChar
@@ -109,31 +108,30 @@ func createGrid(input string) ([][]string, Position) {
 	return grid, position
 }
 
-func walkGrid(position Position, direction Direction, grid [][]string) ([]Position, bool) {
-	visitedPositionsOccurrences := make(map[Position]int)
-	visitedPositionsOccurrences[position] = 1
+func walkGrid(position Position, direction Direction, grid [][]string, checkLoops bool) (map[Position]int, bool) {
+	positionsOccurrences := map[Position]int{
+		position: 1,
+	}
 
 	for {
 		newPosition := position.Move(direction)
 		if (newPosition.x < 0 || newPosition.x >= len(grid[0])) || (newPosition.y < 0 || newPosition.y >= len(grid)) {
-			values := slices.Collect(maps.Keys(visitedPositionsOccurrences))
-			return values, false
+			return positionsOccurrences, false
 		}
 
 		if grid[newPosition.y][newPosition.x] == obstacleChar {
-			visitedPositionsOccurrences[newPosition] += 1
 			// Just check for possible loops on turns
-			if visitedPositionsOccurrences[newPosition] > 3 {
-				return slices.Collect(maps.Keys(visitedPositionsOccurrences)), true
+			if positionsOccurrences[newPosition] > 5 {
+				return positionsOccurrences, true
+			} else if checkLoops {
+				positionsOccurrences[newPosition] += 1
 			}
 
 			direction = position.Turn(direction)
 			continue
-
-		} else if _, ok := visitedPositionsOccurrences[newPosition]; !ok {
-			visitedPositionsOccurrences[newPosition] = 1
 		}
 
+		positionsOccurrences[newPosition] += 1
 		position = newPosition
 
 	}
