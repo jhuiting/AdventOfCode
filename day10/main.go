@@ -75,10 +75,10 @@ func part1(input string) int {
 		for _, newPosition := range currentPositions {
 			if !trailsForTrailHead[newPosition] && grid[newPosition] == trailEnd {
 				trailsForTrailHead[newPosition] = true
-				trails += 1
 			}
 		}
 
+		trails += len(trailsForTrailHead)
 	}
 
 	return trails
@@ -91,11 +91,7 @@ func part2(input string) int {
 	for trailStart := range trailHeads {
 		currentPositions := walkGrid([]Position{trailStart}, grid)
 
-		for _, newPosition := range currentPositions {
-			if grid[newPosition] == trailEnd {
-				trails += 1
-			}
-		}
+		trails += len(currentPositions)
 
 	}
 
@@ -103,24 +99,24 @@ func part2(input string) int {
 }
 
 func walkGrid(currentPositions []Position, grid map[Position]int) []Position {
-	for i := 1; i <= 9; i++ {
-		for _, currentPosition := range currentPositions {
-			if grid[currentPosition.Move(Up)] == grid[currentPosition]+1 {
-				currentPositions = append(currentPositions, currentPosition.Move(Up))
-			}
-			if grid[currentPosition.Move(Down)] == grid[currentPosition]+1 {
-				currentPositions = append(currentPositions, currentPosition.Move(Down))
-			}
-			if grid[currentPosition.Move(Left)] == grid[currentPosition]+1 {
-				currentPositions = append(currentPositions, currentPosition.Move(Left))
+	lastPositions := map[int][]Position{0: currentPositions}
 
-			}
-			if grid[currentPosition.Move(Right)] == grid[currentPosition]+1 {
-				currentPositions = append(currentPositions, currentPosition.Move(Right))
-			}
+	var checkAndAppendPosition = func(direction Direction, position Position, index int) {
+		if currentValue := grid[position]; grid[position.Move(direction)] == currentValue+1 {
+			lastPositions[index] = append(lastPositions[index], position.Move(direction))
 		}
 	}
-	return currentPositions
+
+	for i := 0; i < 9; i++ {
+		for _, currentPosition := range lastPositions[i] {
+			checkAndAppendPosition(Up, currentPosition, i+1)
+			checkAndAppendPosition(Down, currentPosition, i+1)
+			checkAndAppendPosition(Left, currentPosition, i+1)
+			checkAndAppendPosition(Right, currentPosition, i+1)
+		}
+
+	}
+	return lastPositions[9]
 }
 
 func makeGrid(input string) (map[Position]int, map[Position]bool) {
