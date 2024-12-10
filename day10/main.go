@@ -59,24 +59,83 @@ const (
 	Right Direction = 4
 )
 
+const (
+	trailHead = 0
+	trailEnd  = 9
+)
+
 func part1(input string) int {
-	var grid [][]int
+	grid, trailHeads := makeGrid(input)
+
+	trails := 0
+	for trailStart := range trailHeads {
+		trailsForTrailHead := map[Position]bool{}
+		currentPositions := walkGrid([]Position{trailStart}, grid)
+
+		for _, newPosition := range currentPositions {
+			if !trailsForTrailHead[newPosition] && grid[newPosition] == trailEnd {
+				trailsForTrailHead[newPosition] = true
+				trails += 1
+			}
+		}
+
+	}
+
+	return trails
+}
+
+func part2(input string) int {
+	grid, trailHeads := makeGrid(input)
+
+	trails := 0
+	for trailStart := range trailHeads {
+		currentPositions := walkGrid([]Position{trailStart}, grid)
+
+		for _, newPosition := range currentPositions {
+			if grid[newPosition] == trailEnd {
+				trails += 1
+			}
+		}
+
+	}
+
+	return trails
+}
+
+func walkGrid(currentPositions []Position, grid map[Position]int) []Position {
+	for i := 1; i <= 9; i++ {
+		for _, currentPosition := range currentPositions {
+			if grid[currentPosition.Move(Up)] == grid[currentPosition]+1 {
+				currentPositions = append(currentPositions, currentPosition.Move(Up))
+			}
+			if grid[currentPosition.Move(Down)] == grid[currentPosition]+1 {
+				currentPositions = append(currentPositions, currentPosition.Move(Down))
+			}
+			if grid[currentPosition.Move(Left)] == grid[currentPosition]+1 {
+				currentPositions = append(currentPositions, currentPosition.Move(Left))
+
+			}
+			if grid[currentPosition.Move(Right)] == grid[currentPosition]+1 {
+				currentPositions = append(currentPositions, currentPosition.Move(Right))
+			}
+		}
+	}
+	return currentPositions
+}
+
+func makeGrid(input string) (map[Position]int, map[Position]bool) {
+	var grid = make(map[Position]int)
 	trailHeads := make(map[Position]bool)
+
 	for y, line := range strings.Split(input, "\n") {
-		for x, number := range strings.Split(line, " ") {
+		for x, number := range strings.Split(line, "") {
 			val, _ := strconv.Atoi(number)
-			grid = append(grid, []int{x, y, val})
-			if val == 0 {
+			grid[Position{x, y}] = val
+			if val == trailHead {
 				trailHeads[Position{x, y}] = true
 			}
 
 		}
 	}
-
-	return 0
-}
-
-func part2(input string) int {
-
-	return 0
+	return grid, trailHeads
 }
