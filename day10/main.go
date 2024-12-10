@@ -4,6 +4,8 @@ import (
 	_ "embed"
 	"strconv"
 	"strings"
+
+	. "eye.security/v2/helpers"
 )
 
 //go:embed input.txt
@@ -16,52 +18,8 @@ func init() {
 	}
 }
 
-type Position struct {
-	x int
-	y int
-}
-
-func (position Position) Turn(direction Direction) Direction {
-	switch direction {
-	case Up:
-		direction = Right
-	case Right:
-		direction = Down
-	case Down:
-		direction = Left
-	case Left:
-		direction = Up
-	}
-	return direction
-}
-
-func (position Position) Move(direction Direction) Position {
-	switch direction {
-	case Up:
-		return Position{x: position.x, y: position.y - 1}
-	case Down:
-		return Position{x: position.x, y: position.y + 1}
-	case Left:
-		return Position{x: position.x - 1, y: position.y}
-	case Right:
-		return Position{x: position.x + 1, y: position.y}
-	}
-
-	panic("Invalid direction")
-}
-
-type Direction int
-
-const (
-	Up    Direction = 1
-	Down  Direction = 2
-	Left  Direction = 3
-	Right Direction = 4
-)
-
 const (
 	trailHead = 0
-	trailEnd  = 9
 )
 
 func part1(input string) int {
@@ -70,10 +28,9 @@ func part1(input string) int {
 	trails := 0
 	for trailStart := range trailHeads {
 		trailsForTrailHead := map[Position]bool{}
-		currentPositions := walkGrid([]Position{trailStart}, grid)
 
-		for _, newPosition := range currentPositions {
-			if !trailsForTrailHead[newPosition] && grid[newPosition] == trailEnd {
+		for _, newPosition := range walkGrid([]Position{trailStart}, grid) {
+			if !trailsForTrailHead[newPosition] {
 				trailsForTrailHead[newPosition] = true
 			}
 		}
@@ -89,10 +46,7 @@ func part2(input string) int {
 
 	trails := 0
 	for trailStart := range trailHeads {
-		currentPositions := walkGrid([]Position{trailStart}, grid)
-
-		trails += len(currentPositions)
-
+		trails += len(walkGrid([]Position{trailStart}, grid))
 	}
 
 	return trails
@@ -126,9 +80,9 @@ func makeGrid(input string) (map[Position]int, map[Position]bool) {
 	for y, line := range strings.Split(input, "\n") {
 		for x, number := range strings.Split(line, "") {
 			val, _ := strconv.Atoi(number)
-			grid[Position{x, y}] = val
+			grid[Position{X: x, Y: y}] = val
 			if val == trailHead {
-				trailHeads[Position{x, y}] = true
+				trailHeads[Position{X: x, Y: y}] = true
 			}
 
 		}
